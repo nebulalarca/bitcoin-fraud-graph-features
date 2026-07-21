@@ -27,7 +27,7 @@ This repository contains an end-to-end Machine Learning pipeline to detect fraud
 
 ---
 
-## 📈 Model Performance (Temporal Test)
+##  Model Performance (Temporal Test)
 
 Below are the test results evaluated on unseen future time steps (Steps 35 to 49):
 
