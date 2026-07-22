@@ -26,6 +26,35 @@ This repository contains an end-to-end Machine Learning pipeline to detect fraud
    - **Temporal Split (Realistic Evaluation):** Split data chronologically by `time_step` (First 70% for Training, Last 30% for Testing).
 
 ---
+---
+
+## Graph Feature Hypothesis Test
+
+**Research question:** Do graph-derived features (node degree, PageRank, neighborhood illicit ratio) improve fraud detection beyond the dataset's own local + aggregated features?
+
+Using the same temporal split as above (to keep the comparison fair), two XGBoost models were trained: one on the original 165 features, one with 3 additional graph features computed via NetworkX on the transaction graph.
+
+| Model | PR-AUC | 95% CI (bootstrap, n=1000) |
+|---|---|---|
+| Baseline (original features) | 0.7996 | (0.7790, 0.8201) |
+| Graph-enhanced (+ degree, PageRank, neighborhood illicit ratio) | 0.8680 | (0.8515, 0.8847) |
+| **Improvement (Δ)** | **+0.0685** | **(+0.0577, +0.0803)** |
+
+The 95% confidence interval for the difference excludes zero, so the improvement from graph features is statistically significant, not due to chance. This supports the hypothesis that a transaction's position in the network — not just its own attributes — carries meaningful fraud signal.
+
+*See `notebooks/05_graph_vs_baseline.py` for the full implementation.*
+
+---
+
+## Visualizations
+
+**Precision-Recall Curve (Temporal Test)**
+
+![PR Curve](pr_curve.png)
+
+**SHAP Feature Importance**
+
+![SHAP Summary](shap_summary.png)
 
 ##  Model Performance (Temporal Test)
 
@@ -51,6 +80,7 @@ bitcoin-fraud-graph-features/
 │   ├── 02_train.py             # XGBoost model with random split
 │   ├── 03_shap_analysis.py     # Feature Importance & SHAP explanations
 │   └── 04_temporal_split.py    # Realistic chronological validation
+│   ├── 05_graph_vs_baseline.py # Graph feature hypothesis test (baseline vs graph-enhanced, with bootstrap significance)
 ├── .gitignore
 ├── README.md
 └── requirements.txt
